@@ -1,6 +1,7 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
 
-from django.contrib.auth.models import AbstractUser 
 
 # Create your models here.
 # user only for authorization 
@@ -12,6 +13,11 @@ class AuthUser(AbstractUser):
 class UserProfile(models.Model):
     user = models.OneToOneField(AuthUser, on_delete=models.CASCADE, primary_key=True)
     score = models.IntegerField()
+    social_media_links = models.URLField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    contact_information = models.CharField(max_length=255, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+
 
 class Driver(models.Model):
     first_name = models.CharField(max_length=155)
@@ -24,7 +30,7 @@ class Driver(models.Model):
 class DriverChoice(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    chosen_order = models.PositiveIntegerField()  # 1 for first place, 2 for second, etc.
+    chosen_order = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])  # 1 for first place, 2 for second, etc.
 
 
 class Race(models.Model):
