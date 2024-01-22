@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from engine.models import Race
+from ..engine.models import Race
 
 URL = "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship"
 
