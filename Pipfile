@@ -7,6 +7,12 @@ name = "pypi"
 django = "*"
 mysqlclient = "*"
 django-mysql = "*"
+djangorestframework = "*"
+djoser = "*"
+django-rest-framework-nested = "*"
+requests = "*"
+beautifulsoup4 = "*"
+wikipedia = "*"
 
 [dev-packages]
 
