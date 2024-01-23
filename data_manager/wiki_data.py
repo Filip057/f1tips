@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from ..engine.models import Race
+
 
 URL = "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship"
 
@@ -52,6 +52,46 @@ def update_race_model(races):
             existing_race.race_date = race['race_date']
             existing_race.save()
 
+
+def get_drivers_data():
+    page = requests.get(url=URL)
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+    table = soup.find('table', class_="wikitable sortable",)
+    
+
+    drivers_data = []
+
+    rows = table.find_all('tr')
+
+    # Loop through the rows, skipping the first two as they contain headers
+    for row in rows[1:]:
+        columns = row.find_all(['th', 'td'])
+        
+        # Handle the case where there are two names and two numbers separated by <br>
+        if len(columns) == 2:
+            names = columns[0].find_all('a')
+            numbers = columns[1].find_all('br')
+            
+            # Extracting first name, last name, number, and team
+            for name, number in zip(names, numbers):
+                first_name, last_name = name.text.strip().split(maxsplit=1)
+                number = number.next_sibling.strip()
+                
+                # You can extract the team information based on the specific structure of your HTML
+                team = "Your code to extract team here"
+                
+                drivers_data.append({
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'number': number,
+                    'team': team
+                })
+
+    
+    print(drivers_data)
+
 if __name__ == "__main__":
-    all_races = get_race_data()
-    update_race_model(races=all_races)
+    # all_races = get_race_data()
+    # update_race_model(races=all_races)
+    get_drivers_data()

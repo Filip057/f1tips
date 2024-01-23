@@ -80,6 +80,7 @@ WSGI_APPLICATION = 'f1tips.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+PASS = os.environ['MYSQL_PASS']
 
 DATABASES = {
     'default': {
@@ -87,7 +88,7 @@ DATABASES = {
         'NAME': 'F1TIPS',
         'HOST': '127.0.0.1',
         'USER': 'root',
-        'PASSWORD': os.environ['MYSQL_PASS'], 
+        'PASSWORD': PASS, 
     }
 }
 
