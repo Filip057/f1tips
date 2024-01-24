@@ -9,7 +9,7 @@ You will recieve points for correct predictions (it is automated).
 Currently it is scrapping data from wikipedia. 
 
 ## Technology
-- pyhon
+- python
 - Django framework
 - Rest framework 
 - Djoser
