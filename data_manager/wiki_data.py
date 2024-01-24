@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 from engine.models import Driver, Race
 
+# Scrapping data from WIKI 
 
 
 URL = "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship"
@@ -108,7 +109,9 @@ def update_driver_model(driver_list: list):
                  team=driver['team']
              )
 
+def get_race_result():
 
+    pass
 
 if __name__ == "__main__":
     # all_races = get_race_data()
