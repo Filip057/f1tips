@@ -2,6 +2,8 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+from engine.models import Driver, Race
+
 
 
 URL = "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship"
@@ -53,45 +55,63 @@ def update_race_model(races):
             existing_race.save()
 
 
-def get_drivers_data():
+def get_drivers_data() -> list:
     page = requests.get(url=URL)
 
     soup = BeautifulSoup(page.text, 'html.parser')
     table = soup.find('table', class_="wikitable sortable",)
     
-
     drivers_data = []
 
     rows = table.find_all('tr')
 
     # Loop through the rows, skipping the first two as they contain headers
-    for row in rows[1:]:
-        columns = row.find_all(['th', 'td'])
+    for row in rows[2:-1]:
+        columns = row.find_all('td')
+       
+        team = columns[0].text.strip()
+       
+        driver1_number = columns[3].find_all(string=True)[0].strip()
+        driver2_number = columns[3].find_all(string=True)[1].strip()
+       
+        driver1_name=columns[4].find_all('a', string=True)[0].text
+        driver2_name=columns[4].find_all('a', string=True)[2].text
         
-        # Handle the case where there are two names and two numbers separated by <br>
-        if len(columns) == 2:
-            names = columns[0].find_all('a')
-            numbers = columns[1].find_all('br')
-            
-            # Extracting first name, last name, number, and team
-            for name, number in zip(names, numbers):
-                first_name, last_name = name.text.strip().split(maxsplit=1)
-                number = number.next_sibling.strip()
-                
-                # You can extract the team information based on the specific structure of your HTML
-                team = "Your code to extract team here"
-                
-                drivers_data.append({
-                    'first_name': first_name,
-                    'last_name': last_name,
-                    'number': number,
-                    'team': team
-                })
+        driver1 = {
+            'first_name': driver1_name.split()[0],
+            'last_name': driver1_name.split()[1],
+            'number': driver1_number,
+            'team': team,
+        }
+        driver2 = {
+            'first_name': driver2_name.split()[0],
+            'last_name': driver2_name.split()[1],
+            'number': driver2_number,
+            'team': team,
+        }
 
+        drivers_data.append(driver1)
+        drivers_data.append(driver2)
     
     print(drivers_data)
+
+
+def update_driver_model(driver_list: list):
+
+    for driver in driver_list:
+         existing_driver = Driver.objects.filter(number=driver['number'])
+         if existing_driver is None:
+             Driver.objects.create(
+                 first_name=driver['first_name'],
+                 last_name=driver['last_name'],
+                 number=driver['number'],
+                 team=driver['team']
+             )
+
+
 
 if __name__ == "__main__":
     # all_races = get_race_data()
     # update_race_model(races=all_races)
-    get_drivers_data()
+    driver_data= get_drivers_data()
+    update_driver_model(driver_list=driver_data)

@@ -43,8 +43,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     # my apps 
+    'data_manager',
     'engine',
-    'data_manager', 
+     
 ]
 
 MIDDLEWARE = [
