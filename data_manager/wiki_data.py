@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from engine.models import Driver, Race
+# from engine.models import Driver, Race
 
 # Scrapping data from WIKI 
 
@@ -94,7 +94,7 @@ def get_drivers_data() -> list:
         drivers_data.append(driver1)
         drivers_data.append(driver2)
     
-    print(drivers_data)
+    return drivers_data
 
 
 def update_driver_model(driver_list: list):
@@ -109,12 +109,46 @@ def update_driver_model(driver_list: list):
                  team=driver['team']
              )
 
-def get_race_result():
+def get_race_result(gp_name):
+    year = 2023
+    gp_url = f'https://en.wikipedia.org/wiki/{year}_{gp_name}_Grand_Prix'
 
-    pass
+    gp_page = requests.get(url=gp_url).text
+    soup = BeautifulSoup(gp_page, 'html.parser')
+
+    result_table = soup.find_all('table', class_='wikitable sortable')[-1]
+
+    data = result_table.find('tbody')
+    rows = data.find_all('tr')
+
+    race_result_data = []
+
+    RACE_NAME = f'{gp_name} Grand Prix'
+
+    for row in rows[1:-2]:
+        columns = row.find_all(['td', 'th'])
+        
+        position = columns[0].find(string=True).text.strip()
+        first_name = columns[2].text.split()[0]
+        last_name = columns[2].text.split()[1]
+
+        driver_result = {
+            'position': int(position), 
+            'first_name': first_name,
+            'last_name': last_name,
+            'race': RACE_NAME
+        }
+
+        race_result_data.append(driver_result)
+
+    return race_result_data
+
+
+    
 
 if __name__ == "__main__":
     # all_races = get_race_data()
     # update_race_model(races=all_races)
-    driver_data= get_drivers_data()
-    update_driver_model(driver_list=driver_data)
+    # driver_data= get_drivers_data()
+    # update_driver_model(driver_list=driver_data)
+    get_race_result('Monaco')
