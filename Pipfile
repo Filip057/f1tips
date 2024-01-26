@@ -13,6 +13,8 @@ django-rest-framework-nested = "*"
 requests = "*"
 beautifulsoup4 = "*"
 wikipedia = "*"
+redis = "*"
+celery = "*"
 
 [dev-packages]
 

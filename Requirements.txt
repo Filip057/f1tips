@@ -1,6 +1,7 @@
 beautifulsoup4==4.10.0
 Django==3.2.6
 requests==2.26.0
+redis==7.2.4
 celery==5.1.2
 djoser==2.1.0
 djangorestframework==3.12.4
